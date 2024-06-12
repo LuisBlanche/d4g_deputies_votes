@@ -14,7 +14,7 @@ The script `main.py` is designed to scrape and process data about French deputie
 - `unidecode`
 
 ## Functions
-- `get_names_from_group(group_name)`: Extracts the names of deputies belonging to a specified group from a historical dataset.
+- `get_names_from_group(group_name)`: Extracts the names of deputies belonging to a specified group from a historical dataset. The [historical dataset](https://www.data.gouv.fr/fr/datasets/historique-des-deputes-de-lassemblee-nationale-depuis-2002-informations-et-statistiques/) curated by the website [datan.fr](https://datan.fr/) contains information about the political affiliation of deputies.
 - `get_deputy_votes_page(politic_name)`: Fetches the webpage containing the voting records of a specified deputy.
 - `get_votes_from_politic_page(politic_dict)`: Extracts voting data from the HTML content of a deputy's voting record page.
 - `get_politic_votes(politic_name)`: Combines the functionalities of fetching a deputy's voting page and extracting the voting data.

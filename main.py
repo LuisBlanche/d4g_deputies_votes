@@ -10,14 +10,31 @@ from unidecode import unidecode
 
 
 def get_names_from_group(group_name):
+    ''' Get the names of the deputies from a group. 
+    Uses the file deputes-historique.csv to get the names of the deputies. Please look 
+    at the README.md file to know how to get this file.
+
+    Args:
+        group_name (str): Name of the group.
+    Returns:
+        names (list): List of names of the deputies.'''
     df_deputies_hist = pd.read_csv("deputes-historique.csv")
     df_last_legi = df_deputies_hist[df_deputies_hist["datePriseFonction"] == "2022-06-22"].copy()
     names = []
     for idx, fullname in df_last_legi[df_last_legi["groupe"] == group_name][["prenom", "nom"]].iterrows():
-        names.append(unidecode(fullname[0].lower()).replace(" ", "").replace("-", "") + " " + unidecode(fullname[1].lower()).replace(" ", "").replace("-", ""))
+        names.append(unidecode(fullname[0].lower()).replace(" ", "").replace("-", "")
+                     + " " +
+                     unidecode(fullname[1].lower()).replace(" ", "").replace("-", ""))
     return names
 
 def get_deputy_votes_page(politic_name):
+    ''' Fetches the webpage containing the voting records of a specified deputy.
+
+    Args:
+        politic_name (str): Name of the deputy.
+    Returns:
+        politic_dict (dict): Dictionary containing the html page, the url and the
+        name of the deputy.'''
     politic_name = unidecode(politic_name.lower()).replace(" ", "-")
 
     browser = mechanicalsoup.StatefulBrowser()
@@ -36,6 +53,14 @@ def get_deputy_votes_page(politic_name):
         raise ValueError(f"Politic {politic_name} not found")
 
 def get_votes_from_politic_page(politic_dict):
+    ''' Extracts the voting records from the html page of a deputy.
+
+    Args:
+        politic_dict (dict): Dictionary containing the html page, the url and the
+        name of the deputy.
+    Returns:
+        df (pd.DataFrame): DataFrame containing the voting records of the deputy.'''
+
     politic_html = politic_dict["html_page"]
     politic_name = politic_dict["name"]
     vote_elements = politic_html.find_all("div", class_="card card-vote")
@@ -51,15 +76,30 @@ def get_votes_from_politic_page(politic_dict):
     return df
 
 def get_politic_votes(politic_name):
+    ''' Fetches the voting records of a deputy.
+
+    Args:
+        politic_name (str): Name of the deputy.
+    Returns:
+        df (pd.DataFrame): DataFrame containing the voting records of the deputy.'''
     politic_html = get_deputy_votes_page(politic_name)
     df = get_votes_from_politic_page(politic_html)
     return df
 
 def write_politic_votes(politic_name):
+    ''' Writes the voting records of a deputy to a csv file.
+
+    Args:
+        politic_name (str): Name of the deputy.'''
+
     df = get_politic_votes(politic_name)
     df.to_csv(f"{politic_name}.csv", index=False)
 
 def write_group_votes(group_name):
+    ''' Writes the voting records of a group to a csv file.
+
+    Args:
+        group_name (str): Name of the group.'''
     names = get_names_from_group(group_name)
     # Concatenate all votes from all deputies of the group
     df = pd.DataFrame()
