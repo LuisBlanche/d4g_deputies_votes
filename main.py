@@ -117,7 +117,7 @@ def write_group_votes(group_name):
 
 if __name__ == "__main__":
     # Working example
-    name_of_politic = "romain-baubry"
+    name_of_politic = "Sandra Regol"
     write_politic_votes(name_of_politic)
 
     # Working example
